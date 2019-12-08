@@ -28,6 +28,9 @@ private:
 	std::string getUsername();
 	std::string getRealname();
 	std::string getPassword();
+
+	// Server stuff
+	
 };
 
 #endif
