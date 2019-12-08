@@ -82,10 +82,6 @@ int server::createConnection() {
 	if (connect(sockfd, serverInfo->ai_addr, serverInfo->ai_addrlen) < 0) {
 		return -1;
 	}
-
-	// Start up listener
-
-	// return
 	return 0;
 }
 
