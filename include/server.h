@@ -18,6 +18,7 @@ public:
 	server(std::string serverAddress);
 
 	int createConnection();
+	int getSocket();
 
 private:
 
