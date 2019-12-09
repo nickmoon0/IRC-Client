@@ -9,3 +9,10 @@ responseHandler::responseHandler(user* currentUser, interface* mainInterface) {
 	this->mainInterface = mainInterface;
 }
 
+/*
+ * Handler
+ */
+
+void responseHandler::handleResponse(std::string res) {
+	// Stub for now
+}
