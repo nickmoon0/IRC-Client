@@ -85,7 +85,13 @@ int server::createConnection() {
 	return 0;
 }
 
+/*
+ * Getters
+ */
 
+int server::getSocket() {
+	return this->sockfd;
+}
 
 
 

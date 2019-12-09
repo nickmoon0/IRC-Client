@@ -19,6 +19,8 @@ public:
 
 	int createConnection();
 
+	int getSocket();
+
 private:
 
 	// Server details/data
