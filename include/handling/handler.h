@@ -12,13 +12,14 @@
 class handler {
 public:
 
-	handler(user* currentUser, interface* mainInterface);
+	handler(user* currentUser, interface* mainInterface, int socket);
 
 protected:
 
 	user* currentUser;
 	interface* mainInterface;
-
+	int socket;
+	
 	std::vector<std::string> splitString(std::string str);
 
 };

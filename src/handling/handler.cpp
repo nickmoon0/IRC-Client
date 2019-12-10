@@ -4,9 +4,11 @@
  * Constructor
  */
 
-handler::handler(user* currentUser, interface* mainInterface) {
+handler::handler(user* currentUser, interface* mainInterface, int socket) {
 	this->currentUser = currentUser;
 	this->mainInterface = mainInterface;
+
+	this->socket = socket;
 }
 
 /*

@@ -20,9 +20,11 @@ public:
 
 	server(user* currentUser, interface* mainInterface, std::string serverAddress, std::string port);
 	server(user* currentUser, interface* mainInterface, std::string serverAddress);
-
+	
+	// Connection stuff
 	int createConnection();
 
+	// Command/Response stuff
 	void handleCommand(std::string input);
 
 private:
