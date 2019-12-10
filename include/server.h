@@ -18,7 +18,6 @@ public:
 	server(std::string serverAddress);
 
 	int createConnection();
-	int getSocket();
 
 private:
 
@@ -32,6 +31,8 @@ private:
 
 	int sockfd;
 	struct addrinfo* serverInfo;
+
+	int getSocket();
 };
 
 #endif
