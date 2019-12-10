@@ -14,14 +14,12 @@ public:
 
 	handler(user* currentUser, interface* mainInterface);
 
-	static std::vector<std::string> splitString(std::string str);
-
 protected:
 
 	user* currentUser;
 	interface* mainInterface;
 
-	
+	std::vector<std::string> splitString(std::string str);
 
 };
 
