@@ -16,6 +16,8 @@ server::server(user* currentUser, interface* mainInterface, std::string serverAd
 
 	this->currentUser = currentUser;
 	this->mainInterface = mainInterface;
+
+	this->reqHandler = new requestHandler(currentUser, mainInterface);
 }
 
 server::server(user* currentUser, interface* mainInterface, std::string serverAddress) {
@@ -97,6 +99,14 @@ int server::createConnection() {
 
 int server::getSocket() {
 	return sockfd;
+}
+
+/*
+ * Req/res handling
+ */
+
+void server::handleCommand(std::string input) {
+	reqHandler->handleInput(input);
 }
 
 

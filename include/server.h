@@ -13,6 +13,8 @@
 #include "user.h"
 #include "interface.h"
 
+#include "handling/requestHandler.h"
+
 class server {
 public:
 
@@ -21,24 +23,33 @@ public:
 
 	int createConnection();
 
+	void handleCommand(std::string input);
+
 private:
 
 	// Server details/data
 	const char DEFAULT_PORT[5] = "6667";
-	
 	std::string port;
 	std::string serverAddress;
-
 	std::vector<std::string>* serverIPList;
-
 	int sockfd;
 	struct addrinfo* serverInfo;
-
 	int getSocket();
 
 	// Input/Response handling
 	user* currentUser;
 	interface* mainInterface;
+
+	requestHandler *reqHandler;
 };
 
 #endif
+
+
+
+
+
+
+
+
+
