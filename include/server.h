@@ -10,12 +10,14 @@
 #include <netdb.h>
 
 // Project headers
+#include "user.h"
+#include "interface.h"
 
 class server {
 public:
 
-	server(std::string serverAddress, std::string port);
-	server(std::string serverAddress);
+	server(user* currentUser, interface* mainInterface, std::string serverAddress, std::string port);
+	server(user* currentUser, interface* mainInterface, std::string serverAddress);
 
 	int createConnection();
 
@@ -33,6 +35,10 @@ private:
 	struct addrinfo* serverInfo;
 
 	int getSocket();
+
+	// Input/Response handling
+	user* currentUser;
+	interface* mainInterface;
 };
 
 #endif

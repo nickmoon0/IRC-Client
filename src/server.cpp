@@ -8,18 +8,24 @@
  * Constructor
  */
 
-server::server(std::string serverAddress, std::string port) {
+server::server(user* currentUser, interface* mainInterface, std::string serverAddress, std::string port) {
 	this->serverAddress = serverAddress;
 	this->port = port;
 
 	serverIPList = new std::vector<std::string>();
+
+	this->currentUser = currentUser;
+	this->mainInterface = mainInterface;
 }
 
-server::server(std::string serverAddress) {
+server::server(user* currentUser, interface* mainInterface, std::string serverAddress) {
 	this->serverAddress = serverAddress;
 
 	this->port = DEFAULT_PORT;
 	serverIPList = new std::vector<std::string>();
+
+	this->currentUser = currentUser;
+	this->mainInterface = mainInterface;
 }
 
 /*
