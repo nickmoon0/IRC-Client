@@ -96,17 +96,24 @@ int session::addServer(std::vector<std::string> inputVec) {
 	// Check to make sure server has not already been added
 	for (int i = 0; i < serverList->size(); i++) {
 
+		// If the entered server address
 		if (serverList->at(i)->getServerAddress() == serverAddress) {
 			mainInterface->outputMessage("Server has already been added");
 			return -1;
 		}
 
-		for (int x = 0; x < serverList->at(i)->getServerIPList()->size(); x++) {
-			if (serverList->at(i)->getServerIPList()->at(x) == serverAddress) {
-				mainInterface->outputMessage("Server has already been added");
-				return -1;
-			}
+		// If the serverIPList has been generated
+		if (serverList->at(i)->getServerIPList()) {
+
+			// Iterate through serverIPList and make sure none of those match entered address
+			for (int x = 0; x < serverList->at(i)->getServerIPList()->size(); x++) {
+				if (serverList->at(i)->getServerIPList()->at(x) == serverAddress) {
+					mainInterface->outputMessage("Server has already been added");
+					return -1;
+				}
+			}	
 		}
+		
 
 	}
 
@@ -135,7 +142,10 @@ int session::addServer(std::vector<std::string> inputVec) {
 		delete s;
 		return -1;
 	}
+
 	mainInterface->outputMessage("Connected to server");
+	
+	// Create listener function pointer
 	int (*listenerFunc_ptr)(server* serv, responseHandler* respHandler) = listenerFunc;
 	s->startListener(listenerFunc_ptr, respHandler);
 

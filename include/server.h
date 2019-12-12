@@ -38,6 +38,7 @@ public:
 	// Thread stuff
 	int joinThread();
 	int startListener(int (*listenerFunc)(server* serv, responseHandler* respHandler), responseHandler* respHandler);
+
 private:
 
 	std::string port;

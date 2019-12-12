@@ -35,6 +35,7 @@ private:
 
 	// Server stuff
 	std::vector<server*>* serverList;
+	int sendRawMsg(std::string input);
 
 	// Input handling stuff
 	const char COMMAND_PREFIX = '.';
