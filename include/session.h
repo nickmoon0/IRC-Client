@@ -23,7 +23,7 @@ private:
 	// Interface stuff
 	interface* mainInterface;
 
-	// Listening stuff
+	// Listener stuff
 	int listenerFunc(server* serv);
 	responseHandler *respHandler;
 };
