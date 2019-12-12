@@ -1,6 +1,6 @@
 // Standard headers
 #include <sys/socket.h>
-
+#include <iostream>
 // Project headers
 #include "session.h"
 
@@ -51,9 +51,24 @@ void session::start() {
 
 		if (serverHandling(input) != 0) {
 			// handleResponse(input)
+			sendRawMsg(input);
+			mainInterface->outputMessage("Sent message");
 		}
 	}
 
+}
+
+int session::sendRawMsg(std::string input) {
+	if (!currentServer) {
+		mainInterface->outputMessage("No server selected");
+		return -1;
+	}
+
+	if(currentServer->sendMessage(input) < 0) {
+		mainInterface->outputMessage("Failed to send message");
+		return -1;
+	}
+	return 0;
 }
 
 /*
@@ -75,7 +90,7 @@ int session::serverHandling(std::string input) {
 			// Disconnect
 		} else if (commandVec.at(0) == serverManagementCommands::SWITCH) {
 			
-			switchServer(inputVec);
+			switchServer(commandVec);
 
 		} else {
 			return 1;
@@ -181,18 +196,20 @@ int session::switchServer(std::vector<std::string> inputVec) {
 	std::string toSwitch = inputVec.at(1);
 
 	// Check if number was entered
-	long num;
-	if ((num = std::stol(toSwitch)) >= 0) {
-		if (num >= serverList->size()) {
-			mainInterface->outputMessage("Index for switch is out of range");
-			mainInterface->outputMessage("Please remember to use 0 based index\'s");
-			return -1;
+	try {
+		long num = stol(toSwitch);
+		if (num >= 0) {
+			if (num >= serverList->size()) {
+				mainInterface->outputMessage("Index for switch is out of range");
+				mainInterface->outputMessage("Please remember to use 0 based index\'s");
+				return -1;
+			}
+			currentServer = serverList->at(num);
+			mainInterface->outputMessage("Switched to server: " + currentServer->getServerAddress());
+			return 0;
 		}
-		currentServer = serverList->at(num);
-		mainInterface->outputMessage("Switched to server: " + currentServer->getServerAddress());
-		return 0;
-	}
-
+	} catch (std::invalid_argument err) {}
+	
 	server* s;
 
 	// Checking that server exists in serverList

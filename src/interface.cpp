@@ -2,7 +2,6 @@
 
 #include <ncurses.h>
 #include <string>
-
 /*
  * Constructor
  */
@@ -219,6 +218,7 @@ void interface::outputMessage(std::string message) {
 	// Move the cursor back to the input box and refresh the inputWin
 	wmove(this->inputWin, this->inputCoordY, this->inputCoordX);
 	wrefresh(this->inputWin);
+
 }
 
 

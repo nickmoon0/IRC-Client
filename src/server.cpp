@@ -94,11 +94,20 @@ int server::createConnection() {
  */
 
 int server::sendMessage(std::string msg) {
-	char terminatingCharacters[] = "\r\n";
+	if (msg.length() > MAX_MESSAGE_LEN - 2) {
+		return -1;
+	}
 
-	int bytesSent = send(sockfd, msg.c_str(), sizeof msg.c_str(), serverInfo->ai_flags);
+	msg += '\r';
+	msg += '\n';
 
-	if (bytesSent <= 0) {
+	char messageBuffer[msg.length()];
+	memset(messageBuffer, 0, sizeof(messageBuffer));
+
+	strcpy(messageBuffer, msg.c_str());
+
+	int bytesSent = send(sockfd, messageBuffer, strlen(messageBuffer), serverInfo->ai_flags);
+	if (bytesSent < 0) {
 		return -1;
 	}
 	return 0;
