@@ -13,6 +13,7 @@
 #include <thread>
 
 // Project headers
+#include "responseHandler.h"
 
 class server {
 public:
@@ -32,7 +33,7 @@ public:
 
 	// Thread stuff
 	int joinThread();
-	int startListener(int (*listenerFunc)(server* serv));
+	int startListener(int (*listenerFunc)(server* serv, responseHandler* respHandler), responseHandler* respHandler);
 private:
 
 	std::string port;

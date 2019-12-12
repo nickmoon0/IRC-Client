@@ -112,8 +112,8 @@ int server::joinThread() {
 	return 0;
 }
 
-int server::startListener(int (*listenerFunc)(server* serv)) {
-	listenerThread = new std::thread(listenerFunc, this);
+int server::startListener(int (*listenerFunc)(server* serv, responseHandler* respHandler), responseHandler* respHandler) {
+	listenerThread = new std::thread(listenerFunc, this, respHandler);
 	return 0;
 }
 
