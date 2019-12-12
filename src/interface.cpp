@@ -2,7 +2,6 @@
 
 #include <ncurses.h>
 #include <string>
-
 /*
  * Constructor
  */
@@ -64,7 +63,11 @@ void interface::initInterface() {
 	scrollok(this->outputPad, true);
 	idlok(this->outputPad, true);
 
-	//refresh();
+	/*
+	 * Create mutex
+	 */
+
+	this->outputMutex = new std::mutex();
 
 }
 
@@ -102,6 +105,8 @@ void interface::drawOutputBox() {
 }
 
 void interface::destroyWin() {
+	delete outputMutex;
+
 	outputMessage("Press any key to continue...");
 	getch();
 	endwin();
@@ -205,6 +210,9 @@ std::string interface::getInput() {
  */
 
 void interface::outputMessage(std::string message) {
+	// Lock up mutex
+	outputMutex->lock();
+
 	if (scrollCursorPos != outputCursorPos) {
 		prefresh(this->outputPad, outputCursorPos, 0, 0, 0, this->outputWindowHeight, this->outputWindowWidth);
 	}
@@ -219,6 +227,8 @@ void interface::outputMessage(std::string message) {
 	// Move the cursor back to the input box and refresh the inputWin
 	wmove(this->inputWin, this->inputCoordY, this->inputCoordX);
 	wrefresh(this->inputWin);
+
+	outputMutex->unlock();
 }
 
 

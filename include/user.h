@@ -11,14 +11,6 @@ public:
 
 	user();
 
-private:
-
-	// User data
-	std::string nickname;
-	std::string username;
-	std::string realname;
-	std::string password;
-
 	void setNickname(std::string nickname);
 	void setUsername(std::string username);
 	void setRealname(std::string realname);
@@ -29,8 +21,13 @@ private:
 	std::string getRealname();
 	std::string getPassword();
 
-	// Server stuff
-	
+private:
+
+	// User data
+	std::string nickname;
+	std::string username;
+	std::string realname;
+	std::string password;
 };
 
 #endif

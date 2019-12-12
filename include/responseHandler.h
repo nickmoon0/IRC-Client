@@ -9,9 +9,6 @@
 // Project headers
 #include "user.h"
 #include "interface.h"
-#include "server.h"
-
-
 
 class responseHandler {
 public:

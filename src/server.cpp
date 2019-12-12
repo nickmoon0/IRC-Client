@@ -13,6 +13,8 @@ server::server(std::string serverAddress, std::string port) {
 	this->port = port;
 
 	serverIPList = new std::vector<std::string>();
+
+	connectionOpen = false;
 }
 
 server::server(std::string serverAddress) {
@@ -82,6 +84,32 @@ int server::createConnection() {
 	if (connect(sockfd, serverInfo->ai_addr, serverInfo->ai_addrlen) < 0) {
 		return -1;
 	}
+
+	connectionOpen = true;
+	return 0;
+}
+
+/*
+ * Send stuff
+ */
+
+int server::sendMessage(std::string msg) {
+	if (msg.length() > MAX_MESSAGE_LEN - 2) {
+		return -1;
+	}
+
+	msg += '\r';
+	msg += '\n';
+
+	char messageBuffer[msg.length()];
+	memset(messageBuffer, 0, sizeof(messageBuffer));
+
+	strcpy(messageBuffer, msg.c_str());
+
+	int bytesSent = send(sockfd, messageBuffer, strlen(messageBuffer), serverInfo->ai_flags);
+	if (bytesSent < 0) {
+		return -1;
+	}
 	return 0;
 }
 
@@ -91,6 +119,39 @@ int server::createConnection() {
 
 int server::getSocket() {
 	return this->sockfd;
+}
+
+std::string server::getPort() {
+	return this->port;
+}
+
+bool server::getConnectionOpen() {
+	return this->connectionOpen;
+}
+
+std::string server::getServerAddress() {
+	return this->serverAddress;
+}
+
+std::vector<std::string>* server::getServerIPList() {
+	return this->serverIPList;
+}
+
+/*
+ * Thread stuff
+ */
+
+int server::joinThread() {
+	if (!listenerThread || !listenerThread->joinable()) {
+		return -1;
+	}
+	listenerThread->join();
+	return 0;
+}
+
+int server::startListener(int (*listenerFunc)(server* serv, responseHandler* respHandler), responseHandler* respHandler) {
+	listenerThread = new std::thread(listenerFunc, this, respHandler);
+	return 0;
 }
 
 

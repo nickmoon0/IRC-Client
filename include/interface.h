@@ -4,6 +4,7 @@
 #include <ncurses.h>
 #include <string>
 #include <vector>
+#include <mutex>
 
 class interface {
 public:
@@ -45,6 +46,9 @@ private:
 	// Windows
 	WINDOW* inputWin;
 	WINDOW* outputPad;
+
+	// Mutex
+	std::mutex *outputMutex;
 
 };
 
