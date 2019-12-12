@@ -3,6 +3,9 @@
 
 // Project headers
 #include "interface.h"
+#include "server.h"
+#include "user.h"
+#include "responseHandler.h"
 
 class session {
 public:
@@ -14,9 +17,15 @@ public:
 
 private:
 
+	// User stuff
+	user* currentUser;
+
 	// Interface stuff
 	interface* mainInterface;
 
+	// Listening stuff
+	int listenerFunc(server* serv);
+	responseHandler *respHandler;
 };
 
 #endif

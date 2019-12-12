@@ -17,6 +17,10 @@
 class server {
 public:
 
+	// Server details/data
+	const char DEFAULT_PORT[5] = "6667";
+	const int MAX_MESSAGE_LEN = 512;
+
 	// constructors
 	server(std::string serverAddress, std::string port);
 	server(std::string serverAddress);
@@ -24,15 +28,13 @@ public:
 	// Connection stuff
 	int createConnection();
 	int getSocket();
+	bool getConnectionOpen();
 
 	// Thread stuff
 	int joinThread();
-	//int startListener(int (*listenerFunc)());
+	int startListener(int (*listenerFunc)(server* serv));
 private:
 
-	// Server details/data
-	const char DEFAULT_PORT[5] = "6667";
-	
 	std::string port;
 	std::string serverAddress;
 
@@ -43,6 +45,7 @@ private:
 
 	// Listener stuff
 	std::thread *listenerThread;
+	bool connectionOpen;
 };
 
 #endif

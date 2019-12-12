@@ -13,6 +13,8 @@ server::server(std::string serverAddress, std::string port) {
 	this->port = port;
 
 	serverIPList = new std::vector<std::string>();
+
+	connectionOpen = false;
 }
 
 server::server(std::string serverAddress) {
@@ -82,6 +84,8 @@ int server::createConnection() {
 	if (connect(sockfd, serverInfo->ai_addr, serverInfo->ai_addrlen) < 0) {
 		return -1;
 	}
+
+	connectionOpen = true;
 	return 0;
 }
 
@@ -91,6 +95,9 @@ int server::createConnection() {
 
 int server::getSocket() {
 	return this->sockfd;
+}
+bool server::getConnectionOpen() {
+	return this->connectionOpen;
 }
 
 /*
@@ -104,6 +111,12 @@ int server::joinThread() {
 	listenerThread->join();
 	return 0;
 }
+
+int server::startListener(int (*listenerFunc)(server* serv)) {
+	listenerThread = new std::thread(listenerFunc, this);
+	return 0;
+}
+
 
 
 
