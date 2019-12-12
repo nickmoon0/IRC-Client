@@ -29,7 +29,11 @@ public:
 	// Connection stuff
 	int createConnection();
 	int getSocket();
+	std::string getPort();
 	bool getConnectionOpen();
+
+	std::string getServerAddress();
+	std::vector<std::string>* getServerIPList();
 
 	// Thread stuff
 	int joinThread();

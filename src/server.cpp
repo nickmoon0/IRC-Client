@@ -96,8 +96,21 @@ int server::createConnection() {
 int server::getSocket() {
 	return this->sockfd;
 }
+
+std::string server::getPort() {
+	return this->port;
+}
+
 bool server::getConnectionOpen() {
 	return this->connectionOpen;
+}
+
+std::string server::getServerAddress() {
+	return this->serverAddress;
+}
+
+std::vector<std::string>* server::getServerIPList() {
+	return this->serverIPList;
 }
 
 /*

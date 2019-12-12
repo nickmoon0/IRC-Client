@@ -66,7 +66,11 @@ int session::serverHandling(std::string input) {
 		std::vector<std::string> commandVec = splitString(input.substr(1), ' ');
 
 		if (commandVec.at(0) == serverManagementCommands::CONNECT) {
-			// Add server
+			
+			if(addServer(commandVec) < 0) {
+				mainInterface->outputMessage("Failed to add server");
+			}
+
 		} else if (commandVec.at(0) == serverManagementCommands::DISCONNECT) {
 			// Disconnect
 		} else if (commandVec.at(0) == serverManagementCommands::SWITCH) {
@@ -87,32 +91,58 @@ int session::addServer(std::vector<std::string> inputVec) {
 
 	// Set the server address
 	std::string serverAddress = inputVec.at(1);
+	mainInterface->outputMessage("Adding server: " + serverAddress);
+
+	// Check to make sure server has not already been added
+	for (int i = 0; i < serverList->size(); i++) {
+
+		if (serverList->at(i)->getServerAddress() == serverAddress) {
+			mainInterface->outputMessage("Server has already been added");
+			return -1;
+		}
+
+		for (int x = 0; x < serverList->at(i)->getServerIPList()->size(); x++) {
+			if (serverList->at(i)->getServerIPList()->at(x) == serverAddress) {
+				mainInterface->outputMessage("Server has already been added");
+				return -1;
+			}
+		}
+
+	}
+
+	mainInterface->outputMessage("No conflicts found");
 
 	server* s;
 
 	if (inputVec.size() < 3) { // If no port is provided
 		
 		s = new server(serverAddress);
+		mainInterface->outputMessage("Adding server on default port: " + std::string(s->DEFAULT_PORT));
 	
 	} else if (inputVec.size() >= 3) { // If port is provided
 		
 		// Set port and create server
 		std::string port = inputVec.at(2);
 		s = new server(serverAddress, port);
+		mainInterface->outputMessage("Adding server on port: " + port);
 
-	} else {
-		return -1;
 	}
 
 	// Create connection to server 
 	if (s->createConnection() < 0) {
 		// Delete server object and return -1 if this fails
+		mainInterface->outputMessage(std::string("Failed to create connection with ") + serverAddress + std::string(" on port ") + s->getPort());
 		delete s;
 		return -1;
 	}
-
+	mainInterface->outputMessage("Connected to server");
 	int (*listenerFunc_ptr)(server* serv, responseHandler* respHandler) = listenerFunc;
 	s->startListener(listenerFunc_ptr, respHandler);
+
+	serverList->push_back(s);
+	mainInterface->outputMessage(serverAddress + " has been successfully added");
+	s = nullptr;
+	return 0;
 }
 
 int session::removeServer(std::vector<std::string> inputVec) {

@@ -14,5 +14,5 @@ responseHandler::responseHandler(user* currentUser, interface* mainInterface) {
  */
 
 void responseHandler::handleResponse(std::string res) {
-	// Stub for now
+	mainInterface->outputMessage(res);
 }
