@@ -14,5 +14,12 @@ responseHandler::responseHandler(user* currentUser, interface* mainInterface) {
  */
 
 void responseHandler::handleResponse(std::string res) {
-	mainInterface->outputMessage(res);
+	std::string toPrint;
+	for (int i = 0; i < res.length(); i++) {
+		if (res.at(i) == '\n') {
+			continue;
+		}
+		toPrint += res.at(i);
+	}
+	mainInterface->outputMessage(toPrint);
 }

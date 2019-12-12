@@ -63,7 +63,11 @@ void interface::initInterface() {
 	scrollok(this->outputPad, true);
 	idlok(this->outputPad, true);
 
-	//refresh();
+	/*
+	 * Create mutex
+	 */
+
+	this->outputMutex = new std::mutex();
 
 }
 
@@ -101,6 +105,8 @@ void interface::drawOutputBox() {
 }
 
 void interface::destroyWin() {
+	delete outputMutex;
+
 	outputMessage("Press any key to continue...");
 	getch();
 	endwin();
@@ -204,7 +210,7 @@ std::string interface::getInput() {
  */
 
 void interface::outputMessage(std::string message) {
-	outputMutex = new std::mutex();
+	// Lock up mutex
 	outputMutex->lock();
 
 	if (scrollCursorPos != outputCursorPos) {
@@ -223,7 +229,6 @@ void interface::outputMessage(std::string message) {
 	wrefresh(this->inputWin);
 
 	outputMutex->unlock();
-	delete outputMutex;
 }
 
 
