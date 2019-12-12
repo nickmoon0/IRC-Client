@@ -74,7 +74,9 @@ int session::serverHandling(std::string input) {
 		} else if (commandVec.at(0) == serverManagementCommands::DISCONNECT) {
 			// Disconnect
 		} else if (commandVec.at(0) == serverManagementCommands::SWITCH) {
-			// Switch
+			
+			switchServer(inputVec);
+
 		} else {
 			return 1;
 		}
@@ -150,8 +152,18 @@ int session::addServer(std::vector<std::string> inputVec) {
 	s->startListener(listenerFunc_ptr, respHandler);
 
 	serverList->push_back(s);
+
 	mainInterface->outputMessage(serverAddress + " has been successfully added");
 	s = nullptr;
+
+	// Switching server
+	std::vector<std::string> switchVec = std::vector<std::string>();
+
+	switchVec.push_back(serverManagementCommands::SWITCH);
+	switchVec.push_back(serverList->at(serverList->size() - 1)->getServerAddress());
+	
+	switchServer(switchVec);
+	
 	return 0;
 }
 
@@ -160,7 +172,50 @@ int session::removeServer(std::vector<std::string> inputVec) {
 }
 
 int session::switchServer(std::vector<std::string> inputVec) {
+	// If not enough parameters are provided
+	if (inputVec.size() <= 1) {
+		mainInterface->outputMessage("Not enough parameters provided");
+		return -1;
+	}
 
+	std::string toSwitch = inputVec.at(1);
+
+	// Check if number was entered
+	long num;
+	if ((num = std::stol(toSwitch)) >= 0) {
+		if (num >= serverList->size()) {
+			mainInterface->outputMessage("Index for switch is out of range");
+			mainInterface->outputMessage("Please remember to use 0 based index\'s");
+			return -1;
+		}
+		currentServer = serverList->at(num);
+		mainInterface->outputMessage("Switched to server: " + currentServer->getServerAddress());
+		return 0;
+	}
+
+	server* s;
+
+	// Checking that server exists in serverList
+	for (int i = 0; i < serverList->size(); i++) {
+		
+		// If serverList->at(i) matches the server to switch to
+		if (serverList->at(i)->getServerAddress() == toSwitch) {
+			// Set s as the server and break
+			s = serverList->at(i);
+			break;
+		}
+
+	}
+
+	// If no server was found
+	if (!s) {
+		mainInterface->outputMessage("Server was not found");
+		return -1;
+	}
+
+	currentServer = s;
+	mainInterface->outputMessage("Switched to server: " + currentServer->getServerAddress());
+	return 0;
 }
 
 /*

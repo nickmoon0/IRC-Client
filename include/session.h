@@ -35,6 +35,8 @@ private:
 
 	// Server stuff
 	std::vector<server*>* serverList;
+	server* currentServer;
+	
 	int sendRawMsg(std::string input);
 
 	// Input handling stuff
