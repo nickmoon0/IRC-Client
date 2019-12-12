@@ -90,6 +90,21 @@ int server::createConnection() {
 }
 
 /*
+ * Send stuff
+ */
+
+int server::sendMessage(std::string msg) {
+	char terminatingCharacters[] = "\r\n";
+
+	int bytesSent = send(sockfd, msg.c_str(), sizeof msg.c_str(), serverInfo->ai_flags);
+
+	if (bytesSent <= 0) {
+		return -1;
+	}
+	return 0;
+}
+
+/*
  * Getters
  */
 
