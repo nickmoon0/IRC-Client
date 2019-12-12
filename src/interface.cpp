@@ -204,6 +204,9 @@ std::string interface::getInput() {
  */
 
 void interface::outputMessage(std::string message) {
+	outputMutex = new std::mutex();
+	outputMutex->lock();
+
 	if (scrollCursorPos != outputCursorPos) {
 		prefresh(this->outputPad, outputCursorPos, 0, 0, 0, this->outputWindowHeight, this->outputWindowWidth);
 	}
@@ -219,6 +222,8 @@ void interface::outputMessage(std::string message) {
 	wmove(this->inputWin, this->inputCoordY, this->inputCoordX);
 	wrefresh(this->inputWin);
 
+	outputMutex->unlock();
+	delete outputMutex;
 }
 
 
