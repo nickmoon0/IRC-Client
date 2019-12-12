@@ -93,6 +93,17 @@ int server::getSocket() {
 	return this->sockfd;
 }
 
+/*
+ * Thread stuff
+ */
+
+int server::joinThread() {
+	if (!listenerThread || !listenerThread->joinable()) {
+		return -1;
+	}
+	listenerThread->join();
+	return 0;
+}
 
 
 

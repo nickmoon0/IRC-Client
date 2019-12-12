@@ -9,18 +9,25 @@
 #include <sys/socket.h>
 #include <netdb.h>
 
+// Standard headers
+#include <thread>
+
 // Project headers
 
 class server {
 public:
 
+	// constructors
 	server(std::string serverAddress, std::string port);
 	server(std::string serverAddress);
 
+	// Connection stuff
 	int createConnection();
-
 	int getSocket();
 
+	// Thread stuff
+	int joinThread();
+	//int startListener(int (*listenerFunc)());
 private:
 
 	// Server details/data
@@ -33,6 +40,9 @@ private:
 
 	int sockfd;
 	struct addrinfo* serverInfo;
+
+	// Listener stuff
+	std::thread *listenerThread;
 };
 
 #endif
