@@ -257,7 +257,14 @@ int session::listenerFunc(server* serv, responseHandler* respHandler) {
 		}
 
 		std::string strMsg = msgBuffer;
+
+		// Continue to receive message if the end characters are not CR-LF
+		if (strMsg.substr(strMsg.length() - 2) != "\r\n") {
+			continue;
+		}
+
 		respHandler->handleResponse(strMsg);
+		strMsg.clear();
 	}
 	return 0;
 }
