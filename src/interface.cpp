@@ -110,6 +110,7 @@ void interface::drawOutputBox() {
 }
 
 void interface::refreshPad() {
+	refresh();
 	prefresh(this->outputPad, outputCursorPos, 0, 0, 0, this->outputWindowHeight, this->outputWindowWidth);
 }
 
@@ -164,6 +165,10 @@ std::string interface::getInput() {
 		if (c == KEY_UP) {
 			//wprintw(this->outputPad, "UP");
 			
+			if (outputCursorPos <= 0) {
+				continue;
+			}
+
 			outputCursorPos--;
 			refreshPad();
 			//prefresh(this->outputPad, outputCursorPos, 0, 0, 0, this->outputWindowHeight, this->outputWindowWidth);
@@ -238,10 +243,10 @@ void interface::outputMessage(std::string message) {
 	}*/
 	
 	// Print the message with a newline character in order to scroll
-	wprintw(this->outputPad, "%s", message.c_str());
+	wprintw(this->outputPad, "%s\n", message.c_str());
 
 	// Refresh the window to display changes
-	refresh();
+	//refresh();
 	//outputCursorPos--;
 	//prefresh(this->outputPad, outputCursorPos, 0, 0, 0, this->outputWindowHeight, this->outputWindowWidth);
 	refreshPad();
