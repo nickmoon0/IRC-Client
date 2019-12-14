@@ -39,24 +39,4 @@ void responseHandler::handleResponse(std::string res) {
 	for (int i = 0; i < printVec.size(); i++) {
 		mainInterface->outputMessage(printVec.at(i));
 	}
-
-	/*std::string toPrint;
-	
-
-
-	// Remove all new line characters before printing
-    for (int i = 0; i < res.length(); i++) {
-		if (res.at(i) == '\n') {
-			continue;
-		}
-
-		if (res.at(i) == '^') {
-			continue;
-		}
-
-		toPrint += res.at(i);
-	}
-
-	mainInterface->outputMessage(std::to_string(toPrint.length()) + ": " + toPrint);
-	//mainInterface->outputMessage("");*/
 }
