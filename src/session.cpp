@@ -23,6 +23,8 @@ session::session() {
 	currentUser = new user();
 
 	respHandler = new responseHandler(currentUser, mainInterface);
+
+	currentServer = nullptr;
 }
 
 session::~session() {
@@ -49,15 +51,17 @@ void session::start() {
 	while (true) {
 		std::string input = mainInterface->getInput();
 
-		if (input == "long") {
-			mainInterface->outputMessage("This is a very very very very very very very very very very very very very very very very LOOOOONG message");
+		if (input == "test") {
+			mainInterface->outputMessage("looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong");
+			continue;
+		}
+
+		if (input.empty()) {
 			continue;
 		}
 
 		if (serverHandling(input) != 0) {
-			// handleResponse(input)
 			sendRawMsg(input);
-			mainInterface->outputMessage("Sent message");
 		}
 	}
 
@@ -82,7 +86,6 @@ int session::sendRawMsg(std::string input) {
 
 int session::serverHandling(std::string input) {
 	if (input.at(0) == COMMAND_PREFIX) {
-		
 		std::vector<std::string> commandVec = splitString(input.substr(1), ' ');
 
 		if (commandVec.at(0) == serverManagementCommands::CONNECT) {

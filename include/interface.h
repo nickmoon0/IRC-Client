@@ -22,7 +22,7 @@ private:
 	void drawInputBox();
 	void drawOutputBox();
 	void refreshPad();
-	
+
 	// Input Box variables
 
 	const int inputCoordY = 1;
@@ -37,6 +37,9 @@ private:
 
 	int outputWindowHeight;
 	int outputWindowWidth;
+
+	const int outputWindowLength = 500;
+
 	int outputWinStartY;
 	int outputWinStartX;
 
