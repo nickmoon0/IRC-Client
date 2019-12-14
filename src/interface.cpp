@@ -48,8 +48,9 @@ void interface::initInterface() {
 	 * Configuring output window
 	 */
 
-	this->outputWindowHeight = screenHeight - inputWindowHeight;
-	this->outputWindowWidth = screenWidth;
+	// Add -1 to hight and width to keep it within terminal and also look better
+	this->outputWindowHeight = screenHeight - inputWindowHeight - 1;
+	this->outputWindowWidth = screenWidth - 1;
 	this->outputWinStartY = 0;
 	this->outputWinStartX = 0;
 
@@ -60,8 +61,8 @@ void interface::initInterface() {
 	this->drawOutputBox();
 	this->drawInputBox();
 
-	scrollok(this->outputPad, true);
-	idlok(this->outputPad, true);
+	//scrollok(this->outputPad, true);
+	//idlok(this->outputPad, true);
 
 	/*
 	 * Create mutex
@@ -70,6 +71,8 @@ void interface::initInterface() {
 	this->outputMutex = new std::mutex();
 
 }
+// ---------------------------------------------------------------------
+// Drawing
 
 void interface::drawInputBox() {
 	// Freeing current pointer if it is not already freed
@@ -96,13 +99,22 @@ void interface::drawOutputBox() {
 	}
 
 	// Creating new window and refreshing the screen
-	this->outputPad = newpad(this->outputWindowHeight, this->outputWindowWidth);
+	this->outputPad = newpad(this->outputWindowLength, this->outputWindowWidth);
+	
+	nodelay(outputPad, true);
 	refresh();
 
 	// Refreshing the pad
-	prefresh(this->outputPad, outputCursorPos, 0, 0, 0, this->outputWindowHeight, this->outputWindowWidth);
+	refreshPad();
 
 }
+
+void interface::refreshPad() {
+	refresh();
+	prefresh(this->outputPad, outputCursorPos, 0, 0, 0, outputWindowHeight, outputWindowWidth);
+}
+
+// ---------------------------------------------------------------------
 
 void interface::destroyWin() {
 	delete outputMutex;
@@ -150,22 +162,18 @@ std::string interface::getInput() {
 		 * SCROLLING
 		 */
 
-		if (c == KEY_UP) {
-			//wprintw(this->outputPad, "UP");
-			
-			if (outputCursorPos >= 0) {
-				scrollCursorPos = outputCursorPos - 1;
-				prefresh(this->outputPad, scrollCursorPos, 0, 0, 0, this->outputWindowHeight, this->outputWindowWidth);
+		if (c == KEY_UP) {			
+			if (outputCursorPos <= 0) {
+				continue;
 			}
+
+			outputCursorPos--;
+			refreshPad();
 			
 			continue;
 		} else if (c == KEY_DOWN) {
-			//wprintw(this->outputPad, "DOWN");
-			
-			if (outputCursorPos < this->outputWindowHeight + 1) {
-				scrollCursorPos = outputCursorPos + 1;
-				prefresh(this->outputPad, scrollCursorPos, 0, 0, 0, this->outputWindowHeight - 1, this->outputWindowWidth);
-			}
+			outputCursorPos++;
+			refreshPad();
 			
 			continue;
 		} 
@@ -212,22 +220,18 @@ std::string interface::getInput() {
 void interface::outputMessage(std::string message) {
 	// Lock up mutex
 	outputMutex->lock();
-
-	if (scrollCursorPos != outputCursorPos) {
-		prefresh(this->outputPad, outputCursorPos, 0, 0, 0, this->outputWindowHeight, this->outputWindowWidth);
-	}
 	
 	// Print the message with a newline character in order to scroll
-	wprintw(this->outputPad, "%s", message.c_str());
-	wprintw(this->outputPad, "\n");
+	wprintw(this->outputPad, "%s\n", message.c_str());
 
 	// Refresh the window to display changes
-	refresh();
-	prefresh(this->outputPad, outputCursorPos, 0, 0, 0, this->outputWindowHeight, this->outputWindowWidth);
+	refreshPad();
+
 	// Move the cursor back to the input box and refresh the inputWin
 	wmove(this->inputWin, this->inputCoordY, this->inputCoordX);
 	wrefresh(this->inputWin);
 
+	// Unlock mutex
 	outputMutex->unlock();
 }
 

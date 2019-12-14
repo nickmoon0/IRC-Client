@@ -15,11 +15,20 @@ responseHandler::responseHandler(user* currentUser, interface* mainInterface) {
 
 void responseHandler::handleResponse(std::string res) {
 	std::string toPrint;
-	for (int i = 0; i < res.length(); i++) {
+
+	// Remove all new line characters before printing
+    for (int i = 0; i < res.length(); i++) {
 		if (res.at(i) == '\n') {
 			continue;
 		}
+
+		//if (res.at(i) == '^') {
+		//	continue;
+		//}
+
 		toPrint += res.at(i);
 	}
+
 	mainInterface->outputMessage(toPrint);
+	//mainInterface->outputMessage("");
 }

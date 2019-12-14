@@ -21,6 +21,7 @@ private:
 	// Functions
 	void drawInputBox();
 	void drawOutputBox();
+	void refreshPad();
 
 	// Input Box variables
 
@@ -36,6 +37,9 @@ private:
 
 	int outputWindowHeight;
 	int outputWindowWidth;
+
+	const int outputWindowLength = 500;
+
 	int outputWinStartY;
 	int outputWinStartX;
 

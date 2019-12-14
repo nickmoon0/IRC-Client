@@ -23,6 +23,8 @@ session::session() {
 	currentUser = new user();
 
 	respHandler = new responseHandler(currentUser, mainInterface);
+
+	currentServer = nullptr;
 }
 
 session::~session() {
@@ -49,10 +51,17 @@ void session::start() {
 	while (true) {
 		std::string input = mainInterface->getInput();
 
+		if (input == "test") {
+			mainInterface->outputMessage("looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong");
+			continue;
+		}
+
+		if (input.empty()) {
+			continue;
+		}
+
 		if (serverHandling(input) != 0) {
-			// handleResponse(input)
 			sendRawMsg(input);
-			mainInterface->outputMessage("Sent message");
 		}
 	}
 
@@ -77,7 +86,6 @@ int session::sendRawMsg(std::string input) {
 
 int session::serverHandling(std::string input) {
 	if (input.at(0) == COMMAND_PREFIX) {
-		
 		std::vector<std::string> commandVec = splitString(input.substr(1), ' ');
 
 		if (commandVec.at(0) == serverManagementCommands::CONNECT) {
@@ -257,7 +265,14 @@ int session::listenerFunc(server* serv, responseHandler* respHandler) {
 		}
 
 		std::string strMsg = msgBuffer;
+
+		// Continue to receive message if the end characters are not CR-LF
+		/*if (strMsg.substr(strMsg.length() - 2) != "\r\n") {
+			continue;
+		}*/
+
 		respHandler->handleResponse(strMsg);
+		strMsg.clear();
 	}
 	return 0;
 }
