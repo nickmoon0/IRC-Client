@@ -12,9 +12,6 @@
 // Standard headers
 #include <thread>
 
-// Project headers
-#include "responseHandler.h"
-
 class server {
 public:
 
@@ -34,10 +31,6 @@ public:
 
 	std::string getServerAddress();
 	std::vector<std::string>* getServerIPList();
-
-	// Thread stuff
-	int joinThread();
-	int startListener(int (*listenerFunc)(server* serv, responseHandler* respHandler), responseHandler* respHandler);
 
 	// Send stuff
 	int sendMessage(std::string msg);

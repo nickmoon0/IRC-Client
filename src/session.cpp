@@ -18,27 +18,32 @@ const std::string serverManagementCommands::SWITCH = "switch";
 
 session::session() {
 	serverList = new std::vector<server*>();
+	listenerList = new std::vector<listener*>();
 
 	mainInterface = new interface();
 	currentUser = new user();
-
-	respHandler = new responseHandler(currentUser, mainInterface);
 
 	currentServer = nullptr;
 }
 
 session::~session() {
-	delete respHandler;
-
 	mainInterface->destroyWin();
 	delete mainInterface;
-
-	delete currentUser;
-
-	for (int i = 0; i < serverList->size(); i++) {
-		serverList->at(i)->joinThread();
+	
+	if (listenerList) {
+		for (int i = 0; i < listenerList->size(); i++) {
+			listenerList->at(i)->joinThread();
+		}
+		delete listenerList;
 	}
-	delete serverList;
+
+	if (currentUser) {
+		delete currentUser;
+	}
+	if (serverList) {
+		delete serverList;
+	}
+	
 }
 
 /*
@@ -108,6 +113,9 @@ int session::serverHandling(std::string input) {
 	return 1;
 }
 
+// ---------------------------------------------------------------------
+// Add server
+
 int session::addServer(std::vector<std::string> inputVec) {
 	// if too little parameters are provided
 	if (inputVec.size() <= 1) {
@@ -146,6 +154,7 @@ int session::addServer(std::vector<std::string> inputVec) {
 
 	server* s;
 
+	// Create server with port and address
 	if (inputVec.size() < 3) { // If no port is provided
 		
 		s = new server(serverAddress);
@@ -169,12 +178,19 @@ int session::addServer(std::vector<std::string> inputVec) {
 	}
 
 	mainInterface->outputMessage("Connected to server");
-	
-	// Create listener function pointer
-	int (*listenerFunc_ptr)(server* serv, responseHandler* respHandler) = listenerFunc;
-	s->startListener(listenerFunc_ptr, respHandler);
-
 	serverList->push_back(s);
+
+	// Starting listener
+	listener* l = new listener(s, currentUser);
+	
+	if (l->start(mainInterface) < 0) {
+		mainInterface->outputMessage("Failed to start listener for " + serverAddress + ". You will not receive messages from this server");
+		delete l;
+	} else { // Use an else statement and continue with function as you may be able to create a listener for server later
+		listenerList->push_back(l);
+		mainInterface->outputMessage("Successfully created listener for server");	
+	}
+	
 
 	mainInterface->outputMessage(serverAddress + " has been successfully added");
 	s = nullptr;
@@ -190,9 +206,15 @@ int session::addServer(std::vector<std::string> inputVec) {
 	return 0;
 }
 
-int session::removeServer(std::vector<std::string> inputVec) {
+// ---------------------------------------------------------------------
+// Remove server
 
+int session::removeServer(std::vector<std::string> inputVec) {
+	return 0;
 }
+
+// ---------------------------------------------------------------------
+// Switch server
 
 int session::switchServer(std::vector<std::string> inputVec) {
 	// If not enough parameters are provided
@@ -240,40 +262,6 @@ int session::switchServer(std::vector<std::string> inputVec) {
 
 	currentServer = s;
 	mainInterface->outputMessage("Switched to server: " + currentServer->getServerAddress());
-	return 0;
-}
-
-/*
- * Listener
- */
-
-int session::listenerFunc(server* serv, responseHandler* respHandler) {
-	// Get the socket and create message buffer
-	int socket = serv->getSocket();
-	char msgBuffer[serv->MAX_MESSAGE_LEN];
-
-	// While the connection is open
-	while (serv->getConnectionOpen()) {
-		
-		memset(msgBuffer, 0, sizeof msgBuffer);
-		
-		int bytesReceived = recv(socket, msgBuffer, serv->MAX_MESSAGE_LEN, 0);
-	
-		if (bytesReceived <= 0) {
-			// fatal error occured or 
-			return -1;
-		}
-
-		std::string strMsg = msgBuffer;
-
-		// Continue to receive message if the end characters are not CR-LF
-		/*if (strMsg.substr(strMsg.length() - 2) != "\r\n") {
-			continue;
-		}*/
-
-		respHandler->handleResponse(strMsg);
-		strMsg.clear();
-	}
 	return 0;
 }
 

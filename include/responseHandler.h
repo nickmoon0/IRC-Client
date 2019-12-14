@@ -9,19 +9,21 @@
 // Project headers
 #include "user.h"
 #include "interface.h"
+#include "server.h"
 
 class responseHandler {
 public:
 
 	// Constructor
-	responseHandler(user* currentUser, interface* mainInterface);
+	responseHandler(user* currentUser, interface* mainInterface, server* serv);
 	void handleResponse(std::string res);
 
 private:
 	
 	user* currentUser;
 	interface* mainInterface;
-
+	server* serv;
+	
 };
 
 #endif
