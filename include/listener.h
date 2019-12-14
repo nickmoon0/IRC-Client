@@ -9,6 +9,7 @@
 #include "server.h"
 #include "responseHandler.h"
 #include "user.h"
+#include "interface.h"
 
 class listener {
 public:
@@ -16,7 +17,7 @@ public:
 	listener(server* serv, user* currentUser);
 	~listener();
 
-	int start();
+	int start(interface* mainInterface);
 	int joinThread();
 
 private:
@@ -26,7 +27,10 @@ private:
 	user* currentUser;
 
 	// Thread stuff
+	int listen();
 	std::thread *listeningThread;
+	responseHandler* respHandler;
+
 };
 
 #endif

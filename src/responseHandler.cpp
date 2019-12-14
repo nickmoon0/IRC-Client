@@ -5,9 +5,10 @@
  * Contructor
  */
 
-responseHandler::responseHandler(user* currentUser, interface* mainInterface) {
+responseHandler::responseHandler(user* currentUser, interface* mainInterface, server* serv) {
 	this->currentUser = currentUser;
 	this->mainInterface = mainInterface;
+	this->serv = serv;
 }
 
 /*

@@ -22,22 +22,13 @@ session::session() {
 	mainInterface = new interface();
 	currentUser = new user();
 
-	respHandler = new responseHandler(currentUser, mainInterface);
-
 	currentServer = nullptr;
 }
 
 session::~session() {
-	delete respHandler;
-
 	mainInterface->destroyWin();
 	delete mainInterface;
-
 	delete currentUser;
-
-	for (int i = 0; i < serverList->size(); i++) {
-		serverList->at(i)->joinThread();
-	}
 	delete serverList;
 }
 
@@ -108,6 +99,9 @@ int session::serverHandling(std::string input) {
 	return 1;
 }
 
+// ---------------------------------------------------------------------
+// Add server
+
 int session::addServer(std::vector<std::string> inputVec) {
 	// if too little parameters are provided
 	if (inputVec.size() <= 1) {
@@ -169,11 +163,6 @@ int session::addServer(std::vector<std::string> inputVec) {
 	}
 
 	mainInterface->outputMessage("Connected to server");
-	
-	// Create listener function pointer
-	int (*listenerFunc_ptr)(server* serv, responseHandler* respHandler) = listenerFunc;
-	s->startListener(listenerFunc_ptr, respHandler);
-
 	serverList->push_back(s);
 
 	mainInterface->outputMessage(serverAddress + " has been successfully added");
@@ -190,9 +179,15 @@ int session::addServer(std::vector<std::string> inputVec) {
 	return 0;
 }
 
+// ---------------------------------------------------------------------
+// Remove server
+
 int session::removeServer(std::vector<std::string> inputVec) {
 
 }
+
+// ---------------------------------------------------------------------
+// Switch server
 
 int session::switchServer(std::vector<std::string> inputVec) {
 	// If not enough parameters are provided

@@ -137,23 +137,6 @@ std::vector<std::string>* server::getServerIPList() {
 	return this->serverIPList;
 }
 
-/*
- * Thread stuff
- */
-
-int server::joinThread() {
-	if (!listenerThread || !listenerThread->joinable()) {
-		return -1;
-	}
-	listenerThread->join();
-	return 0;
-}
-
-int server::startListener(int (*listenerFunc)(server* serv, responseHandler* respHandler), responseHandler* respHandler) {
-	listenerThread = new std::thread(listenerFunc, this, respHandler);
-	return 0;
-}
-
 
 
 

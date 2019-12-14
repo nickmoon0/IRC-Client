@@ -49,7 +49,6 @@ private:
 
 	// Listening stuff
 	static int listenerFunc(server* serv, responseHandler* respHandler);
-	responseHandler *respHandler;
 
 	// Misc
 	std::vector<std::string> splitString(std::string str, char delimiter);

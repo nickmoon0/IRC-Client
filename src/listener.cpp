@@ -8,19 +8,25 @@ listener::listener(server* serv, user* currentUser) {
 	this->serv = serv;
 	this->currentUser = currentUser;
 
+	this->respHandler = nullptr;
 	this->listeningThread = nullptr;
 }
 
 listener::~listener() {
-	delete listeningThread;
+	if (respHandler) {
+		delete respHandler;
+	}
+	if (listeningThread) {
+		delete listeningThread;
+	}
 }
 
-int listeningThread::joinThread() {
-	if (!listeningThread || !listeningThread.joinable()) {
+int listener::joinThread() {
+	if (!listeningThread || !listeningThread->joinable()) {
 		return -1;
 	}
 
-	listeningThread.join();
+	listeningThread->join();
 	return 0;
 }
 
@@ -28,8 +34,10 @@ int listeningThread::joinThread() {
  * Listening
  */ 
 
-int listener::start() {
+int listener::start(interface* mainInterface) {
 	listeningThread = new std::thread(&listener::listen, this);
+	respHandler = new responseHandler(currentUser, mainInterface, serv);
+	return 0;
 }
 
 int listener::listen() {
