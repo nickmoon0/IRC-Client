@@ -1,4 +1,5 @@
 #include "responseHandler.h"
+#include <vector>
 
 /*
  * Contructor
@@ -14,7 +15,34 @@ responseHandler::responseHandler(user* currentUser, interface* mainInterface) {
  */
 
 void responseHandler::handleResponse(std::string res) {
-	std::string toPrint;
+	std::string buffer;
+	std::vector<std::string> printVec = std::vector<std::string>();
+
+	for (int i = 0; i < res.length(); i++) {
+		if (res.at(i) == '\r' && res.at(i + 1) == '\n') {
+			printVec.push_back(buffer);
+			buffer.clear();
+			i++;
+			continue;
+		}
+
+		if (i == res.length() - 1) {
+			buffer += res.at(i);
+			printVec.push_back(buffer);
+			buffer.clear();
+			continue;
+		}
+
+		buffer += res.at(i);
+	}
+
+	for (int i = 0; i < printVec.size(); i++) {
+		mainInterface->outputMessage(printVec.at(i));
+	}
+
+	/*std::string toPrint;
+	
+
 
 	// Remove all new line characters before printing
     for (int i = 0; i < res.length(); i++) {
@@ -22,13 +50,13 @@ void responseHandler::handleResponse(std::string res) {
 			continue;
 		}
 
-		//if (res.at(i) == '^') {
-		//	continue;
-		//}
+		if (res.at(i) == '^') {
+			continue;
+		}
 
 		toPrint += res.at(i);
 	}
 
-	mainInterface->outputMessage(toPrint);
-	//mainInterface->outputMessage("");
+	mainInterface->outputMessage(std::to_string(toPrint.length()) + ": " + toPrint);
+	//mainInterface->outputMessage("");*/
 }
