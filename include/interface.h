@@ -21,7 +21,8 @@ private:
 	// Functions
 	void drawInputBox();
 	void drawOutputBox();
-
+	void refreshPad();
+	
 	// Input Box variables
 
 	const int inputCoordY = 1;

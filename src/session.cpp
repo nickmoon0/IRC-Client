@@ -49,6 +49,11 @@ void session::start() {
 	while (true) {
 		std::string input = mainInterface->getInput();
 
+		if (input == "long") {
+			mainInterface->outputMessage("This is a very very very very very very very very very very very very very very very very LOOOOONG message");
+			continue;
+		}
+
 		if (serverHandling(input) != 0) {
 			// handleResponse(input)
 			sendRawMsg(input);
@@ -259,9 +264,9 @@ int session::listenerFunc(server* serv, responseHandler* respHandler) {
 		std::string strMsg = msgBuffer;
 
 		// Continue to receive message if the end characters are not CR-LF
-		if (strMsg.substr(strMsg.length() - 2) != "\r\n") {
+		/*if (strMsg.substr(strMsg.length() - 2) != "\r\n") {
 			continue;
-		}
+		}*/
 
 		respHandler->handleResponse(strMsg);
 		strMsg.clear();
