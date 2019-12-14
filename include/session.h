@@ -10,7 +10,7 @@
 #include "server.h"
 #include "user.h"
 #include "responseHandler.h"
-#include "listener"
+#include "listener.h"
 
 struct serverManagementCommands {
 	static const std::string CONNECT;
@@ -37,6 +37,7 @@ private:
 	// Server stuff
 	std::vector<server*>* serverList;
 	server* currentServer;
+	std::vector<listener*>* listenerList;
 	
 	int sendRawMsg(std::string input);
 
