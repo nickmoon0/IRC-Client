@@ -239,40 +239,6 @@ int session::switchServer(std::vector<std::string> inputVec) {
 }
 
 /*
- * Listener
- */
-
-int session::listenerFunc(server* serv, responseHandler* respHandler) {
-	// Get the socket and create message buffer
-	int socket = serv->getSocket();
-	char msgBuffer[serv->MAX_MESSAGE_LEN];
-
-	// While the connection is open
-	while (serv->getConnectionOpen()) {
-		
-		memset(msgBuffer, 0, sizeof msgBuffer);
-		
-		int bytesReceived = recv(socket, msgBuffer, serv->MAX_MESSAGE_LEN, 0);
-	
-		if (bytesReceived <= 0) {
-			// fatal error occured or 
-			return -1;
-		}
-
-		std::string strMsg = msgBuffer;
-
-		// Continue to receive message if the end characters are not CR-LF
-		/*if (strMsg.substr(strMsg.length() - 2) != "\r\n") {
-			continue;
-		}*/
-
-		respHandler->handleResponse(strMsg);
-		strMsg.clear();
-	}
-	return 0;
-}
-
-/*
  * Misc
  */
 
