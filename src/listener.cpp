@@ -11,6 +11,19 @@ listener::listener(server* serv, user* currentUser) {
 	this->listeningThread = nullptr;
 }
 
+listener::~listener() {
+	delete listeningThread;
+}
+
+int listeningThread::joinThread() {
+	if (!listeningThread || !listeningThread.joinable()) {
+		return -1;
+	}
+
+	listeningThread.join();
+	return 0;
+}
+
 /*
  * Listening
  */ 

@@ -14,7 +14,10 @@ class listener {
 public:
 
 	listener(server* serv, user* currentUser);
+	~listener();
+
 	int start();
+	int joinThread();
 
 private:
 
