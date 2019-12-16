@@ -155,7 +155,17 @@ public:
 	void handleResponse(std::string res);
 
 private:
+
+	// Message data
+	const char MESSAGE_PREFIX = ':';
+
+	// Handlers
+	void directMessage(std::string msg);
 	
+	void handleStandard(std::vector<std::string> msgVec);
+	void handleLusers(std::vector<std::string> msgVec);
+
+	// End of handlers
 	void printRawMessage(std::string res); // For testing purposes only (and when a message cant be handled)
 
 	// Pointers to session stuff
