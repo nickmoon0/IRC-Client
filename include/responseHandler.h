@@ -156,14 +156,20 @@ public:
 
 private:
 
+	// Misc functions
+	std::string getBody(int startIndex, std::vector<std::string> msgVec);
+
 	// Message data
 	const char MESSAGE_PREFIX = ':';
 
-	// Handlers
+	// Handling
 	void directMessage(std::string msg);
 	
+	// Numeric handlers
 	void handleStandard(std::vector<std::string> msgVec);
 	void handleLusers(std::vector<std::string> msgVec);
+
+	// Non-numeric handlers
 
 	// End of handlers
 	void printRawMessage(std::string res); // For testing purposes only (and when a message cant be handled)

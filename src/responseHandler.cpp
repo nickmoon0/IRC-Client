@@ -119,7 +119,7 @@ void responseHandler::directMessage(std::string msg) {
 
 	} catch (std::invalid_argument e) {
 	
-		mainInterface->outputMessage("Non-numeric reply: " + msg);
+		//mainInterface->outputMessage("Non-numeric reply: " + msg);
 	
 	} catch (std::out_of_range e) {
 
@@ -150,13 +150,8 @@ void responseHandler::handleStandard(std::vector<std::string> msgVec) {
 	std::string dst = msgVec.at(2);
 
 	// Iterate through the rest of the message to get the body
-	std::string body;
 	int bodyStartIndex = 3;
-	
-	for (int i = bodyStartIndex; i < msgVec.size(); i++) {
-		body += msgVec.at(i) + " "; 
-	}
-	body = body.substr(1); // Remove colon from message body	
+	std::string body = getBody(bodyStartIndex, msgVec);
 
 	std::string toPrint = "[" + src + " -> " + dst + "] " + body;
 
@@ -177,20 +172,40 @@ void responseHandler::handleLusers(std::vector<std::string> msgVec) {
 
 	// Change how message is constructed/displayed if it is RPL_LUSERME
 	std::string command = msgVec.at(1);
+	int bodyStartIndex;
 	if (std::stoi(command) == RPL_LUSERME) {
-		
-		body = msgVec.at(3).substr(1); // Use substr to remove prefix
+		bodyStartIndex = 3;
+
+		body = getBody(bodyStartIndex, msgVec);
 		toPrint = "[" + src + " -> " + dst + "] " + body;
 
 	} else {
-
-		body = msgVec.at(4).substr(1);
+		bodyStartIndex = 4;
+		body = getBody(bodyStartIndex, msgVec);
 		num = msgVec.at(3);
 		toPrint = "[" + src + " -> " + dst + "] " + num + " " + body;
 	
 	}
 
 	mainInterface->outputMessage(toPrint);	
+}
+
+/*
+ * Misc
+ */
+
+std::string responseHandler::getBody(int startIndex, std::vector<std::string> msgVec) {
+	std::string body;
+
+	for (int i = startIndex; i < msgVec.size(); i++) {
+		body += msgVec.at(i) + " ";
+	}
+
+	if (body.at(0) == MESSAGE_PREFIX) {
+		body = body.substr(1);
+	}
+
+	return body; 
 }
 
 /*
