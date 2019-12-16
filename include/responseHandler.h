@@ -156,6 +156,9 @@ public:
 
 private:
 
+	// Misc data
+	std::vector<std::string> *MOTDVec;
+
 	// Misc functions
 	std::string getBody(int startIndex, std::vector<std::string> msgVec);
 
@@ -168,6 +171,7 @@ private:
 	// Numeric handlers
 	void handleStandard(std::vector<std::string> msgVec);
 	void handleLusers(std::vector<std::string> msgVec);
+	void handleMOTD(std::vector<std::string> msgVec);
 
 	// Non-numeric handlers
 

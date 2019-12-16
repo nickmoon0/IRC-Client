@@ -9,6 +9,8 @@ responseHandler::responseHandler(user* currentUser, interface* mainInterface, se
 	this->currentUser = currentUser;
 	this->mainInterface = mainInterface;
 	this->serv = serv;
+
+	this->MOTDVec = nullptr;
 }
 
 /*
@@ -82,8 +84,8 @@ void responseHandler::directMessage(std::string msg) {
 	
 	// If not enough parameters or arguments are provided
 	if (msgVec.size() <= 1) {
-		mainInterface->outputMessage("Malformed server response:");
-		printRawMessage(msg); // Print whole message raw
+		//mainInterface->outputMessage("Malformed server response:");
+		//printRawMessage(msg); // Print whole message raw
 		return;
 	}
 
@@ -98,19 +100,25 @@ void responseHandler::directMessage(std::string msg) {
 		switch (replyNum) {
 
 			// Standard replies
-			case serverReply::RPL_WELCOME:
-			case serverReply::RPL_YOURHOST:
-			case serverReply::RPL_CREATED:
+			case RPL_WELCOME:
+			case RPL_YOURHOST:
+			case RPL_CREATED:
 			handleStandard(msgVec);
 			break;
 
 			// LUSER replies
-			case serverReply::RPL_LUSERCLIENT:
-			case serverReply::RPL_LUSEROP:
-			case serverReply::RPL_LUSERUNKNOWN:
-			case serverReply::RPL_LUSERCHANNELS:
-			case serverReply::RPL_LUSERME:
+			case RPL_LUSERCLIENT:
+			case RPL_LUSEROP:
+			case RPL_LUSERUNKNOWN:
+			case RPL_LUSERCHANNELS:
+			case RPL_LUSERME:
 			handleLusers(msgVec);
+			break;
+
+			case RPL_MOTDSTART:
+			case RPL_MOTD:
+			case RPL_ENDOFMOTD:
+			handleMOTD(msgVec);
 			break;
 
 			default:
@@ -188,6 +196,40 @@ void responseHandler::handleLusers(std::vector<std::string> msgVec) {
 	}
 
 	mainInterface->outputMessage(toPrint);	
+}
+
+// -------------------------------------------------------------------------------------
+// MOTD
+
+void responseHandler::handleMOTD(std::vector<std::string> msgVec) {
+	
+	// Create new vector object if one does not already exist
+	if (MOTDVec == nullptr) {
+		MOTDVec = new std::vector<std::string>();
+	}
+
+	std::string command = msgVec.at(1);
+
+	// If it is the start of a message OR if it is body/middle of message
+	if (command == std::to_string(RPL_MOTDSTART) || command == std::to_string(RPL_MOTD)) {
+		int bodyStartIndex = 3;
+		MOTDVec->push_back(getBody(bodyStartIndex, msgVec));
+		return;
+	}
+
+	// If the whole message has been received
+	if (command == std::to_string(RPL_ENDOFMOTD)) {
+
+		std::string printString;
+		for (int i = 0; i < MOTDVec->size(); i++) {
+			printString += MOTDVec->at(i) + "\n";
+		}
+
+		mainInterface->outputMessage(printString);
+
+		delete MOTDVec;
+		MOTDVec = nullptr;
+	}
 }
 
 /*
