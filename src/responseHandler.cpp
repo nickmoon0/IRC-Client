@@ -103,11 +103,23 @@ void responseHandler::directMessage(std::string msg) {
 			case serverReply::RPL_CREATED:
 			handleStandard(msgVec);
 			break;
+
+			// LUSER replies
+			case serverReply::RPL_LUSERCLIENT:
+			case serverReply::RPL_LUSEROP:
+			case serverReply::RPL_LUSERUNKNOWN:
+			case serverReply::RPL_LUSERCHANNELS:
+			case serverReply::RPL_LUSERME:
+			handleLusers(msgVec);
+			break;
+
+			default:
+			break;
 		}
 
 	} catch (std::invalid_argument e) {
 	
-		mainInterface->outputMessage(msg);
+		mainInterface->outputMessage("Non-numeric reply: " + msg);
 	
 	} catch (std::out_of_range e) {
 
@@ -134,9 +146,17 @@ void responseHandler::handleStandard(std::vector<std::string> msgVec) {
 		return;
 	}
 
-	std::string src = msgVec.at(0).substr(1); // Make the prefix a string without ':' at front
-	std::string body = msgVec.at(3).substr(1); // Remove colon from message body
+	std::string src = msgVec.at(0).substr(1); // Make the prefix a string without ':' at front	
 	std::string dst = msgVec.at(2);
+
+	// Iterate through the rest of the message to get the body
+	std::string body;
+	int bodyStartIndex = 3;
+	
+	for (int i = bodyStartIndex; i < msgVec.size(); i++) {
+		body += msgVec.at(i) + " "; 
+	}
+	body = body.substr(1); // Remove colon from message body	
 
 	std::string toPrint = "[" + src + " -> " + dst + "] " + body;
 
@@ -158,7 +178,7 @@ void responseHandler::handleLusers(std::vector<std::string> msgVec) {
 	// Change how message is constructed/displayed if it is RPL_LUSERME
 	std::string command = msgVec.at(1);
 	if (std::stoi(command) == RPL_LUSERME) {
-
+		
 		body = msgVec.at(3).substr(1); // Use substr to remove prefix
 		toPrint = "[" + src + " -> " + dst + "] " + body;
 
