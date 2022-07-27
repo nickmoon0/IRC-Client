@@ -4,6 +4,7 @@
 // Standard headers
 #include <thread>
 #include <string>
+#include <cstring>
 
 // Project headers
 #include "server.h"

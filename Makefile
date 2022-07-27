@@ -8,7 +8,7 @@ SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
 CFLAGS := -g -std=c++14
 INC := -I include
-LFLAGS := -lcurses
+LFLAGS := -lcurses -lpthread
 
 $(TARGET): $(OBJECTS)
 	@echo "Linking..."

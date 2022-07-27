@@ -1,5 +1,6 @@
 // Standard headers
 #include <arpa/inet.h>
+#include <cstring>
 
 // Project headers
 #include "server.h"
